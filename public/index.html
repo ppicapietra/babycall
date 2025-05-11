@@ -159,7 +159,7 @@
 <body x-data="uiModel()">
   <div class="home-screen" x-show="!isSubscribed && !isTransmitting">
     <img src="./header.png" height="400" />
-    <p class="px-3">Selecciona la acción que vas a realizar con este dispositivo:</p>
+    <p class="px-3">Select the action you want to perform with this device:</p>
     <div class="home-screen-action-buttons">
       <button 
         x-show="!isTransmitting && !isSubscribed" 
@@ -167,7 +167,7 @@
         class="btn btn-primary position-relative btn-transmit"
         :disabled="isLoading"
       >
-      <span x-show="!isLoading" class="d-flex align-items-center justify-content-start gap-2"><i class="fas fa-broadcast-tower"></i>Transmitir</span>
+      <span x-show="!isLoading" class="d-flex align-items-center justify-content-start gap-2"><i class="fas fa-broadcast-tower"></i>Transmit</span>
       <span x-show="isLoading" class="spinner-border spinner-border-sm btn-spinner-indicator" role="status" aria-hidden="true"></span>
       </button>
       <button 
@@ -176,7 +176,7 @@
         class="btn btn-success position-relative btn-subscribe"
         :disabled="isLoading"
       >
-      <span x-show="!isLoading" class="d-flex align-items-center justify-content-start gap-2"><i class="fas fa-eye"></i>Visualizar</span>
+      <span x-show="!isLoading" class="d-flex align-items-center justify-content-start gap-2"><i class="fas fa-eye"></i>Watch</span>
       <span x-show="isLoading" class="spinner-border spinner-border-sm btn-spinner-indicator" role="status" aria-hidden="true"></span>
       </button>
 
@@ -185,15 +185,15 @@
 
   <!-- Black screen -->
   <div x-ref="blackout" class="blackout" @click="screenOn = true" x-show="!screenOn">
-    <p class="text-center text-gray-500 fs-4">Transmitiendo...</p>
-    <p class="text-center text-gray-500 fs-1">Toca para encender la pantalla</p>
+    <p class="text-center text-gray-500 fs-4">Transmitting...</p>
+    <p class="text-center text-gray-500 fs-1">Tap to turn on the screen</p>
   </div>
 
   <!-- Error message: No websocket connection  -->
   <div x-show="!ws && screenOn" class="action-bar py-2">
     <div class="container">
-      <p>Ops! Parece que el servidor se ha desconectado.<br>Si crees que es un error, intentá recargar la página.</p>
-      <button @click="document.location.reload()" class="btn btn-primary">Recargar</button>
+      <p>Ops! The server seems to have disconnected.<br>If you believe it's an error, try reloading the page.</p>
+      <button @click="document.location.reload()" class="btn btn-primary">Reload</button>
     </div>
   </div>
 
@@ -205,7 +205,7 @@
           @click="hangup()" 
           class="btn btn-hangup text-white"
         >
-          <i class="fas fa-phone-slash me-2"></i><span>Colgar</span>
+          <i class="fas fa-phone-slash me-2"></i><span>Hang up</span>
         </button>
         <i 
           class="fas fa-moon text-primary screen-off-button"

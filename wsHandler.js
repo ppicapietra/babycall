@@ -2,24 +2,34 @@ const ClientsHandler = require( './clientHandler' );
 const { debug } = require( './utils' );
 
 function onConnection( ws, req ) {
-  ws.id = crypto.randomUUID();
-  ws.role = null;
-  ws.address = req.socket.remoteAddress;
-
-  debug( `New client connected [ID: ${ ws.id }] from ${ ws.address }` );
-
-
-  ws.on( 'message', ( message ) => {
-    onMessage.call( { ws }, message );
-  } );
-
-  ws.on( 'close', () => {
-    onClose.call( { ws } );
-  } );
-
-  ws.on( 'error', ( error ) => {
-    onError.call( { ws }, error );
-  } );
+  try {
+    try {
+      const { randomUUID } = require('node:crypto');
+      ws.id = randomUUID();
+    } catch (error) {
+      debug("Crypto not available, using random UUID");
+      ws.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+    ws.role = null;
+    ws.address = req.socket.remoteAddress;
+  
+    debug( `New client connected [ID: ${ ws.id }] from ${ ws.address }` );
+  
+  
+    ws.on( 'message', ( message ) => {
+      onMessage.call( { ws }, message );
+    } );
+  
+    ws.on( 'close', () => {
+      onClose.call( { ws } );
+    } );
+  
+    ws.on( 'error', ( error ) => {
+      onError.call( { ws }, error );
+    } );
+  } catch (error) {
+    console.error( `Error on connection: ${ error }` );
+  }
 }
 
 function onMessage( message ) {

@@ -2,27 +2,9 @@
 
 A modern, web-based baby monitoring solution that transforms any smartphone into a baby monitor. No special hardware required - just use your existing devices on a local WiFi network.
 
-## 🌟 Features
+## Requisites
 
-- **Local Network Only**: Works entirely on your local WiFi network - no internet connection required
-- **Real-time Monitoring**: Live audio and video streaming between devices
-- **Multiple Viewers**: Support for unlimited viewers while maintaining a single transmitter
-- **YouTube Integration**: Control YouTube playback on the transmitter from any viewer
-- **Night Mode**: Reduces environmental light for better night-time monitoring
-- **Secure**: All communication stays within your local network
-
-## 🛠️ Technical Stack
-
-- **WebSocket**: Real-time signaling and communication
-- **WebRTC**: Peer-to-peer audio/video streaming
-- **Express**: Backend server implementation
-- **Modern Web Technologies**: Built with the latest web standards
-
-## 📋 Prerequisites
-
-- A local WiFi network
-- Modern web browser (Chrome, Firefox, Safari, or Edge)
-- At least two devices (one for transmitting, one or more for viewing)
+- NodeJS 18+
 
 ## 🚀 Installation
 
@@ -53,6 +35,22 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
    ```
 
 4. To access the application see the terminal for the url or the QR to scan from a mobile device
+
+## 🌟 Features
+
+- **Local Network Only**: Works entirely on your local WiFi network - no internet connection required
+- **Real-time Monitoring**: Live audio and video streaming between devices
+- **Multiple Viewers**: Support for unlimited viewers while maintaining a single transmitter
+- **YouTube Integration**: Control YouTube playback on the transmitter from any viewer
+- **Night Mode**: Reduces environmental light for better night-time monitoring
+- **Secure**: All communication stays within your local network
+
+## 🛠️ Technical Stack
+
+- **WebSocket**: Real-time signaling and communication
+- **WebRTC**: Peer-to-peer audio/video streaming
+- **Express**: Backend server implementation
+- **Modern Web Technologies**: Built with the latest web standards
 
 ## 💻 Usage
 
