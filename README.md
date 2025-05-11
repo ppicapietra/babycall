@@ -29,8 +29,9 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/ppicapietra/baby-call-webapp.git
-   cd baby-call-webapp
+   git clone https://github.com/ppicapietra/babycall.git
+   cd babycall
+   code .
    ```
 
 2. Install dependencies:
@@ -44,6 +45,12 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
    ```bash
    npm start
    ```
+  
+   or, if you want debug information on the terminal:
+
+   ```bash
+   npm start:debug
+   ```
 
 4. To access the application see the terminal for the url or the QR to scan from a mobile device
 
@@ -56,21 +63,12 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
 
 2. **Viewer Setup**:
    - Open the app on any device you want to use as a viewer
-   - Enter the transmitter's room code
+   - Click on the button "Visualizar"
    - Start monitoring
 
 3. **YouTube Control**:
    - From any viewer device, enter a YouTube URL
-   - Control playback (play/pause) remotely
-
-## 🔧 Configuration
-
-The application can be configured through environment variables:
-
-```env
-PORT=3000
-WS_PORT=8080
-```
+   - Control playback (play/pause) remotely, broadcasting the new status to all the others viewers
 
 ## 📝 License
 
