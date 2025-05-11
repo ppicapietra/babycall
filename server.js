@@ -4,14 +4,15 @@ const https = require( 'https' );
 const fs = require( 'fs' );
 const WebSocket = require( 'ws' );
 const os = require( 'os' );
+const path = require( 'path' );
 const qrcode = require('qrcode-terminal');
 const wsHandler = require( './wsHandler' );
 const { debug } = require( './utils' );
 const app = express();
 
 // HTTPS certificates
-const privateKey = fs.readFileSync( 'certs/private.key', 'utf8' );
-const certificate = fs.readFileSync( 'certs/server.crt', 'utf8' );
+const privateKey = fs.readFileSync(path.join(__dirname, 'certs/private.key'));
+const certificate = fs.readFileSync(path.join(__dirname, 'certs/server.crt'));
 const credentials = {
   key: privateKey,
   cert: certificate,
@@ -37,7 +38,7 @@ wss.on( 'connection', ( ws, req ) => {
 } );
 
 // Serve static files
-app.use( express.static( 'public' ) );
+app.use( express.static( path.join(__dirname, 'public') ) );
 
 // HTTP to HTTPS redirect
 const redirectApp = express();
@@ -69,6 +70,14 @@ httpsServer.listen( 3000, '0.0.0.0', () => {
   console.log( `Or you can scan this QR code with your phone:` );
   qrcode.generate( URL, { small: true } );
 } );
+
+process.on('uncaughtException', err => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', err => {
+  console.error('Unhandled Rejection:', err);
+});
 
 http.createServer( redirectApp ).listen( 80, '0.0.0.0', () => {
   // nothing to do

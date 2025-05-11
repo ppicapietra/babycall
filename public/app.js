@@ -11,7 +11,7 @@ function uiModel() {
     role: null,
     isTransmitting: false,
     isSubscribed: false,
-    statusMessage: 'Desconectado',
+    statusMessage: 'Disconnected',
 
     // Youtube
     isYoutubePlaying: false,
@@ -31,7 +31,7 @@ function uiModel() {
     // Methods
     async startTransmission() {
       this.isLoading = true;
-      this.statusMessage = 'Iniciando transmisión...';
+      this.statusMessage = 'Starting transmission...';
       this.role = this.ROLES.TRANSMITTER;
 
       try {
@@ -80,7 +80,7 @@ function uiModel() {
 
         this.sendMessage( { type: 'register', role: this.role } );
         this.isTransmitting = true;
-        this.statusMessage = 'Transmitiendo...';
+        this.statusMessage = 'Transmitting...';
 
       } catch ( error ) {
         this.statusMessage = 'Error: ' + error.message;
@@ -92,13 +92,13 @@ function uiModel() {
 
     async startSubscription() {
       this.isLoading = true;
-      this.statusMessage = 'Iniciando suscripción...';
+      this.statusMessage = 'Starting subscription...';
       this.role = this.ROLES.SUBSCRIBER;
 
       try {
 
         this.sendMessage( { type: 'register', role: this.role } );
-        this.statusMessage = 'Esperando transmisión...';
+        this.statusMessage = 'Waiting for transmission...';
       } catch ( error ) {
         this.statusMessage = 'Error: ' + error.message;
         console.error( 'Error starting subscription:', error );
@@ -137,17 +137,17 @@ function uiModel() {
         console.log( 'Peer connection state changed:', pc.connectionState );
         switch ( pc.connectionState ) {
           case 'connected':
-            this.statusMessage = 'Conexión establecida';
+            this.statusMessage = 'Connection established';
             console.log( 'Peer connection established' );
             if ( this.role === this.ROLES.SUBSCRIBER ) {
               this.isSubscribed = true;
-              this.statusMessage = 'Subscrito a la transmisión';
+              this.statusMessage = 'Subscribed to transmission';
               this.isLoading = false;
             }
             break;
           case 'disconnected':
           case 'failed':
-            this.statusMessage = 'Conexión perdida';
+            this.statusMessage = 'Connection lost';
             console.log( 'Peer connection lost, attempting to reconnect' );
             if ( this.role === this.ROLES.SUBSCRIBER ) {
               this.isSubscribed = false;
@@ -163,7 +163,7 @@ function uiModel() {
             console.log( 'Peer connection closed' );
             if ( this.role === this.ROLES.SUBSCRIBER ) {
               this.isSubscribed = false;
-              this.statusMessage = 'Estado: Desconectado';
+              this.statusMessage = 'Disconnected';
             }
             break;
         }
@@ -272,7 +272,7 @@ function uiModel() {
         console.error( 'Error received:', payload.message );
       } else if ( type === 'transmission_ended' ) {
         console.log( 'Transmission ended by server' );
-        this.statusMessage = 'Transmisión finalizada';
+        this.statusMessage = 'Transmission ended';
         this.cleanupPeerConnection( payload.sender );
       } else if ( data.type === 'create-offer' ) {
         console.log( 'Received create-offer' );
@@ -425,7 +425,7 @@ function uiModel() {
         console.error( 'Error received:', payload.message );
       } else if ( type === 'transmission_ended' ) {
         console.log( 'Transmission ended by server' );
-        this.statusMessage = 'Transmisión finalizada';
+        this.statusMessage = 'Transmission ended';
         this.cleanupPeerConnection( payload.sender );
       } else if ( type === 'offer' ) {
         console.log( 'Received offer' );
@@ -476,7 +476,7 @@ function uiModel() {
         }
       } catch ( error ) {
         console.error( 'Error handling offer:', error );
-        this.statusMessage = 'Error al procesar la oferta';
+        this.statusMessage = 'Error processing offer';
         this.cleanupPeerConnection( payload.sender );
       }
     },
@@ -557,7 +557,7 @@ function uiModel() {
 
     handleDisconnect() {
       console.log( 'Handling disconnect' );
-      this.statusMessage = 'Desconectado';
+      this.statusMessage = 'Disconnected';
       if ( this.isYoutubePlaying ) {
         this.stopYoutubeVideo();
       }
