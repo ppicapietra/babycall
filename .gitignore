@@ -1,0 +1,5 @@
+certs/*
+node_modules/
+public/css/*
+public/js/*
+public/webfonts/*

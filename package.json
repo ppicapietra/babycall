@@ -1,0 +1,29 @@
+{
+  "name": "ppica.babycall",
+  "version": "1.0.0",
+  "main": "server.js",
+  "bin": "server.js",
+  "pkg": {
+    "assets": [
+      "certs/*"
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start:debug": "DEBUG=true node server.js",
+    "postinstall": "node scripts/copy-static-deps.js"
+  },
+  "author": "ppica",
+  "license": "ISC",
+  "description": "A local baby-call webApp for parents to watch their babies",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "alpinejs": "^3.14.9",
+    "bootstrap": "^5.3.6",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.18.1"
+  }
+}
