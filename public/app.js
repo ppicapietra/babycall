@@ -147,24 +147,13 @@ function uiModel() {
             break;
           case 'disconnected':
           case 'failed':
-            this.statusMessage = 'Connection lost';
-            console.log( 'Peer connection lost, attempting to reconnect' );
-            if ( this.role === this.ROLES.SUBSCRIBER ) {
-              this.isSubscribed = false;
-              this.isLoading = false;
+            console.log( 'Peer connection disconnected or failed' );
+            this.cleanupPeerConnection( target );
+            if ( ( this.role === this.ROLES.SUBSCRIBER ) || ( this.peerConnections.size === 0 && this.ws?.readyState === WebSocket.CLOSED ) ) {
+              this.handleDisconnect();
             }
-            setTimeout( () => {
-              if ( pc.connectionState === 'disconnected' || pc.connectionState === 'failed' ) {
-                this.cleanupPeerConnection( target );
-              }
-            }, 5000 );
             break;
-          case 'closed':
-            console.log( 'Peer connection closed' );
-            if ( this.role === this.ROLES.SUBSCRIBER ) {
-              this.isSubscribed = false;
-              this.statusMessage = 'Disconnected';
-            }
+          default:
             break;
         }
       };
@@ -210,7 +199,6 @@ function uiModel() {
 
         this.ws.addEventListener( 'open', () => {
           clearTimeout( timeout );
-          console.log( 'WebSocket connected' );
           resolve();
         } );
 
@@ -355,7 +343,6 @@ function uiModel() {
 
       // Forzar la actualización del componente
       if ( el.addIframe ) {
-        console.log( 'Manually calling addIframe' );
         el.addIframe();
       }
 
@@ -365,11 +352,9 @@ function uiModel() {
 
       const checkIframe = setInterval( () => {
         attempts++;
-        console.log( `Attempt ${ attempts } to find iframe` );
 
         const iframe = el.shadowRoot?.querySelector( 'iframe' );
         if ( iframe ) {
-          console.log( 'Iframe found, playing video' );
           clearInterval( checkIframe );
 
           // Asegurarse de que el iframe esté configurado correctamente
@@ -380,7 +365,6 @@ function uiModel() {
           // Intentar reproducir el video
           try {
             iframe.contentWindow.postMessage( '{"event":"command","func":"playVideo","args":""}', '*' );
-            console.log( 'Play command sent to iframe' );
           } catch ( error ) {
             console.error( 'Error sending play command to iframe:', error );
           }
@@ -443,7 +427,6 @@ function uiModel() {
 
     async handleOffer( payload ) {
       try {
-        console.log( 'this.isSubscribed', this.isSubscribed )
         if ( this.role !== this.ROLES.SUBSCRIBER || this.isSubscribed ) {
           console.log( 'Rejecting new offer: Client is already subscribed to a transmission or is not a subscriber' );
           return;
@@ -550,9 +533,11 @@ function uiModel() {
 
     handleWebSocketClose() {
       console.log( 'WebSocket connection closed' );
-      this.handleDisconnect();
       this.ws.close();
-      this.ws = null;
+      if ( this.peerConnections.size === 0 ) {
+        this.handleDisconnect();
+        this.ws = null;
+      }
     },
 
     handleDisconnect() {
@@ -563,13 +548,19 @@ function uiModel() {
       }
       this.isSubscribed = false;
       this.isTransmitting = false;
+      this.screenOn = true;
       this.peerConnections.forEach( ( peerConnection, peerConnectionId ) => {
         this.cleanupPeerConnection( peerConnectionId );
       } );
       if ( this.role === this.ROLES.TRANSMITTER ) {
         this.localStream.getTracks().forEach( track => track.stop() );
       }
-      this.sendMessage( { type: 'disconnect' } );
+      if ( this.ws?.readyState === WebSocket.OPEN ) {
+        this.sendMessage( { type: 'disconnect' } );
+      }
+      else {
+        this.ws = null;
+      }
     },
 
     handleRemoteDisconnection( payload ) {

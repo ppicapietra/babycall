@@ -64,6 +64,7 @@ const localIP = getLocalIP();
 // Start servers
 httpsServer.listen( 3000, '0.0.0.0', () => {
   const URL = `https://${ localIP }:3000`;
+  console.log( `\n\n` );
   console.log( `### BABY-CALL APP ###` );
   console.log( `\n\n` );
   console.log( `You can open the webApp from here: ${ URL }` );

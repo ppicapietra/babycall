@@ -184,13 +184,13 @@
   </div>
 
   <!-- Black screen -->
-  <div x-ref="blackout" class="blackout" @click="screenOn = true" x-show="!screenOn">
+  <div x-ref="blackout" class="blackout" @click="screenOn = true" x-show="!screenOn" x-cloak>
     <p class="text-center text-gray-500 fs-4">Transmitting...</p>
     <p class="text-center text-gray-500 fs-1">Tap to turn on the screen</p>
   </div>
 
   <!-- Error message: No websocket connection  -->
-  <div x-show="!ws && screenOn" class="action-bar py-2">
+  <div x-show="!ws && peerConnections.size === 0 && screenOn" class="action-bar py-2" x-cloak>
     <div class="container">
       <p>Ops! The server seems to have disconnected.<br>If you believe it's an error, try reloading the page.</p>
       <button @click="document.location.reload()" class="btn btn-primary">Reload</button>
@@ -198,7 +198,7 @@
   </div>
 
   <!-- Action bar -->
-  <div x-show="ws && screenOn && (isTransmitting || isSubscribed)" class="action-bar py-2">
+  <div x-show="(ws || peerConnections.size > 0) && screenOn && (isTransmitting || isSubscribed)" class="action-bar py-2" x-cloak>
     <div class="container">
       <div class="d-flex justify-content-center gap-2">
         <button 
@@ -217,17 +217,16 @@
   </div>
   
   <!-- Video container -->
-  <div x-show="ws && (isSubscribed || isTransmitting)" class="video-container">
+  <div x-show="(ws || peerConnections.size > 0) && (isSubscribed || isTransmitting)" class="video-container" x-cloak>
     <video
       id="videoStreamPlayer" 
       autoplay 
-      playsinline 
-      x-show="isTransmitting || isSubscribed"
+      playsinline
     ></video>
   </div>
 
   <!-- YouTube Controls (only visible for subscriber) -->
-  <div x-show="isSubscribed && showYoutubeControls" id="youtubeControls" class="youtube-controls">
+  <div x-show="isSubscribed && showYoutubeControls" id="youtubeControls" class="youtube-controls" x-cloak>
     <input 
       type="text" 
       id="youtubeUrl" 
@@ -252,7 +251,7 @@
   <lite-youtube id="youtubePlayer"></lite-youtube>
 
   <!-- Estado -->
-  <div id="statusText" class="status-text text-center" x-text="statusMessage" x-show="ws && screenOn && (isTransmitting || isSubscribed)"></div>
+  <div id="statusText" class="status-text text-center" x-text="statusMessage" x-show="(ws || peerConnections.size > 0) && screenOn && (isTransmitting || isSubscribed)" x-cloak></div>
 
   <!-- Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

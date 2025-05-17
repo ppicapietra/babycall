@@ -44,6 +44,7 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
 - **YouTube Integration**: Control YouTube playback on the transmitter from any viewer
 - **Night Mode**: Reduces environmental light for better night-time monitoring
 - **Secure**: All communication stays within your local network
+- **Stability**: The active WebRTC connections stay actives even if the server goes down
 
 ## 🛠️ Technical Stack
 
