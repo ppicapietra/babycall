@@ -43,7 +43,7 @@ app.use( express.static( path.join(__dirname, 'public') ) );
 // HTTP to HTTPS redirect
 const redirectApp = express();
 redirectApp.use( ( req, res ) => {
-  res.redirect( 'https://' + req.headers.host.replace( /:\d+$/, ':3000' ) + req.url );
+  res.redirect( 'https://' + req.headers.host.replace( /:\d+$/, `:${ PORT }` ) + req.url );
 } );
 
 // Function to get local IP
@@ -59,11 +59,12 @@ function getLocalIP() {
   }
 }
 
-const localIP = getLocalIP();
+const LocalIP = getLocalIP();
+const PORT = 3500;
 
 // Start servers
-httpsServer.listen( 3000, '0.0.0.0', () => {
-  const URL = `https://${ localIP }:3000`;
+httpsServer.listen( PORT, '0.0.0.0', () => {
+  const URL = `https://${ LocalIP }:${ PORT }`;
   console.log( `\n\n` );
   console.log( `### BABY-CALL APP (v${ VERSION }) ###` );
   console.log( `\n\n` );
@@ -72,6 +73,12 @@ httpsServer.listen( 3000, '0.0.0.0', () => {
   qrcode.generate( URL, { small: true } );
 } );
 
+// HTTP to HTTPS redirection server
+redirectApp.listen(PORT, '0.0.0.0', () => {
+  console.log(`HTTP to HTTPS redirection server running on port ${ PORT }`);
+});
+
+
 process.on('uncaughtException', err => {
   console.error('Uncaught Exception:', err);
 });
@@ -79,7 +86,3 @@ process.on('uncaughtException', err => {
 process.on('unhandledRejection', err => {
   console.error('Unhandled Rejection:', err);
 });
-
-http.createServer( redirectApp ).listen( 80, '0.0.0.0', () => {
-  // nothing to do
-} );
