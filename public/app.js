@@ -28,6 +28,43 @@ function uiModel() {
     reconnectAttempts: 0,
     MAX_RECONNECT_ATTEMPTS: 5,
 
+    async requestPermissions() {
+      // Solicitar el stream con manejo de errores específico
+      try {
+
+        const cameraPerm = await navigator.permissions.query( { name: 'camera' } );
+        if ( cameraPerm.state === 'denied' ) {
+          throw new Error( 'Se requiere acceso a la cámara.' );
+        }
+
+        const micPerm = await navigator.permissions.query( { name: 'microphone' } );
+        if ( micPerm.state === 'denied' ) {
+          throw new Error( 'Se requiere acceso al micrófono.' );
+        }
+
+        this.localStream = await navigator.mediaDevices.getUserMedia( {
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 30 }
+          },
+          audio: true
+        } );
+
+      } catch ( error ) {
+        if ( error.name === 'NotAllowedError' ) {
+          throw new Error( 'Se requiere acceso a la cámara y micrófono. Por favor, permite el acceso en la configuración del navegador.' );
+        } else if ( error.name === 'NotFoundError' ) {
+          throw new Error( 'No se encontró una cámara o micrófono disponible.' );
+        } else if ( error.name === 'NotReadableError' ) {
+          throw new Error( 'La cámara o micrófono está siendo usado por otra aplicación.' );
+        } else {
+          throw new Error( 'Error al acceder a la cámara o micrófono: ' + error.message );
+        }
+      }
+
+    },
+
     // Methods
     async startTransmission() {
       this.isLoading = true;
@@ -40,39 +77,7 @@ function uiModel() {
           throw new Error( 'Ya existe una transmisión activa' );
         }
 
-        // Verificar permisos antes de solicitar el stream
-        const permissions = await navigator.permissions.query( { name: 'camera' } );
-        if ( permissions.state === 'denied' ) {
-          throw new Error( 'Se requiere acceso a la cámara. Por favor, permite el acceso en la configuración del navegador.' );
-        }
-
-        const audioPermissions = await navigator.permissions.query( { name: 'microphone' } );
-        if ( audioPermissions.state === 'denied' ) {
-          throw new Error( 'Se requiere acceso al micrófono. Por favor, permite el acceso en la configuración del navegador.' );
-        }
-
-        // Solicitar el stream con manejo de errores específico
-        try {
-          this.localStream = await navigator.mediaDevices.getUserMedia( {
-            video: {
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-              frameRate: { ideal: 30 }
-            },
-            audio: true
-          } );
-
-        } catch ( error ) {
-          if ( error.name === 'NotAllowedError' ) {
-            throw new Error( 'Se requiere acceso a la cámara y micrófono. Por favor, permite el acceso en la configuración del navegador.' );
-          } else if ( error.name === 'NotFoundError' ) {
-            throw new Error( 'No se encontró una cámara o micrófono disponible.' );
-          } else if ( error.name === 'NotReadableError' ) {
-            throw new Error( 'La cámara o micrófono está siendo usado por otra aplicación.' );
-          } else {
-            throw new Error( 'Error al acceder a la cámara o micrófono: ' + error.message );
-          }
-        }
+        await this.requestPermissions();
 
         const localVideo = document.querySelector( '#videoStreamPlayer' );
         localVideo.srcObject = this.localStream;
@@ -94,6 +99,8 @@ function uiModel() {
       this.isLoading = true;
       this.statusMessage = 'Starting subscription...';
       this.role = this.ROLES.SUBSCRIBER;
+
+      await this.requestPermissions();
 
       try {
 
