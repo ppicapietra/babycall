@@ -28,8 +28,19 @@ function uiModel() {
     reconnectAttempts: 0,
     MAX_RECONNECT_ATTEMPTS: 5,
 
-    async requestPermissions() {
-      // Solicitar el stream con manejo de errores específico
+    // Methods
+    async startTransmission() {
+      this.isLoading = true;
+      this.statusMessage = 'Starting transmission...';
+      this.role = this.ROLES.TRANSMITTER;
+
+      try {
+        // Verificar si ya existe una transmisión activa
+        if ( this.isTransmitting ) {
+          throw new Error( 'Ya existe una transmisión activa' );
+        }
+
+        // Solicitar el stream con manejo de errores específico
       try {
 
         const cameraPerm = await navigator.permissions.query( { name: 'camera' } );
@@ -48,7 +59,11 @@ function uiModel() {
             height: { ideal: 720 },
             frameRate: { ideal: 30 }
           },
-          audio: true
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
         } );
 
       } catch ( error ) {
@@ -63,24 +78,12 @@ function uiModel() {
         }
       }
 
-    },
-
-    // Methods
-    async startTransmission() {
-      this.isLoading = true;
-      this.statusMessage = 'Starting transmission...';
-      this.role = this.ROLES.TRANSMITTER;
-
-      try {
-        // Verificar si ya existe una transmisión activa
-        if ( this.isTransmitting ) {
-          throw new Error( 'Ya existe una transmisión activa' );
-        }
-
-        await this.requestPermissions();
-
         const localVideo = document.querySelector( '#videoStreamPlayer' );
-        localVideo.srcObject = this.localStream;
+        // Create a new MediaStream with only video track for local preview
+        const videoOnlyStream = new MediaStream(
+          this.localStream.getVideoTracks()
+        );
+        localVideo.srcObject = videoOnlyStream;
         localVideo.muted = true;
 
         this.sendMessage( { type: 'register', role: this.role } );
@@ -99,8 +102,6 @@ function uiModel() {
       this.isLoading = true;
       this.statusMessage = 'Starting subscription...';
       this.role = this.ROLES.SUBSCRIBER;
-
-      await this.requestPermissions();
 
       try {
 
@@ -442,6 +443,9 @@ function uiModel() {
         // Crear nueva conexión peer para esta oferta
         console.log( 'Creating new peer connection for subscriber' );
         let peerConnection = this.createPeerConnection( payload.sender );
+
+        peerConnection.addTransceiver('video', { direction: 'recvonly' });
+        peerConnection.addTransceiver('audio', { direction: 'recvonly' });
 
         console.log( 'Setting remote description' );
         await peerConnection.setRemoteDescription( new RTCSessionDescription( payload.offer ) );
