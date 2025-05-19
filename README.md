@@ -36,6 +36,28 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
 
 4. To access the application see the terminal for the url or the QR to scan from a mobile device
 
+## 🍏 Build MacOS App
+
+To build the MacOS app, you can use the provided npm script. Follow these steps:
+
+1. Ensure you have all the necessary dependencies installed:
+
+   ```bash
+   npm install
+   ```
+
+2. Run the build script for MacOS:
+
+   ```bash
+   npm run build:macos
+   ```
+
+3. After the build process completes, you will find the MacOS app in the `builds/` directory. The app will be named `babycall.app`.
+
+4. You can now run the app directly on your MacOS system.
+
+Note: Make sure you have the necessary permissions to execute shell scripts on your system.
+
 ## 🌟 Features
 
 - **Local Network Only**: Works entirely on your local WiFi network - no internet connection required
