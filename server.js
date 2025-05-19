@@ -9,7 +9,7 @@ const qrcode = require('qrcode-terminal');
 const wsHandler = require( './wsHandler' );
 const { debug } = require( './utils' );
 const app = express();
-
+const VERSION = require( './package.json' ).version;
 // HTTPS certificates
 const privateKey = fs.readFileSync(path.join(__dirname, 'certs/private.key'));
 const certificate = fs.readFileSync(path.join(__dirname, 'certs/server.crt'));
@@ -65,7 +65,7 @@ const localIP = getLocalIP();
 httpsServer.listen( 3000, '0.0.0.0', () => {
   const URL = `https://${ localIP }:3000`;
   console.log( `\n\n` );
-  console.log( `### BABY-CALL APP ###` );
+  console.log( `### BABY-CALL APP (v${ VERSION }) ###` );
   console.log( `\n\n` );
   console.log( `You can open the webApp from here: ${ URL }` );
   console.log( `Or you can scan this QR code with your phone:` );
