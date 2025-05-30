@@ -29,7 +29,7 @@ function uiModel() {
     MAX_RECONNECT_ATTEMPTS: 5,
 
     // Methods
-    async requestPermissions() {
+    async checkPermissions() {
       try {
         const cameraPerm = await navigator.permissions.query( { name: 'camera' } );
         if ( cameraPerm.state === 'denied' ) {
@@ -66,7 +66,7 @@ function uiModel() {
         }
 
         // Solicitar el stream con manejo de errores específico
-        await this.requestPermissions();
+        await this.checkPermissions();
 
         this.localStream = await navigator.mediaDevices.getUserMedia( {
           video: {
@@ -106,8 +106,14 @@ function uiModel() {
       this.statusMessage = 'Starting subscription...';
       this.role = this.ROLES.SUBSCRIBER;
 
-      // Solicitar el stream con manejo de errores específico
-      await this.requestPermissions();
+      // Just to trigger permissions request on some browsers
+      navigator.mediaDevices.getUserMedia( {
+        video: true,
+        audio: true
+      } );
+
+      // Check permissions of camera and microphone
+      await this.checkPermissions();
 
       try {
         this.sendMessage( { type: 'register', role: this.role } );
