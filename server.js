@@ -1,5 +1,4 @@
 const express = require( 'express' );
-const http = require( 'http' );
 const https = require( 'https' );
 const fs = require( 'fs' );
 const WebSocket = require( 'ws' );
@@ -40,12 +39,6 @@ wss.on( 'connection', ( ws, req ) => {
 // Serve static files
 app.use( express.static( path.join(__dirname, 'public') ) );
 
-// HTTP to HTTPS redirect
-const redirectApp = express();
-redirectApp.use( ( req, res ) => {
-  res.redirect( 'https://' + req.headers.host.replace( /:\d+$/, `:${ PORT }` ) + req.url );
-} );
-
 // Function to get local IP
 function getLocalIP() {
   const ifaces = os.networkInterfaces();
@@ -72,12 +65,6 @@ httpsServer.listen( PORT, '0.0.0.0', () => {
   console.log( `Or you can scan this QR code with your phone:` );
   qrcode.generate( URL, { small: true } );
 } );
-
-// HTTP to HTTPS redirection server
-redirectApp.listen(PORT, '0.0.0.0', () => {
-  console.log(`HTTP to HTTPS redirection server running on port ${ PORT }`);
-});
-
 
 process.on('uncaughtException', err => {
   console.error('Uncaught Exception:', err);

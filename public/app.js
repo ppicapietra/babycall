@@ -29,6 +29,31 @@ function uiModel() {
     MAX_RECONNECT_ATTEMPTS: 5,
 
     // Methods
+    async requestPermissions() {
+      try {
+        const cameraPerm = await navigator.permissions.query( { name: 'camera' } );
+        if ( cameraPerm.state === 'denied' ) {
+          throw new Error( 'Se requiere acceso a la cámara.' );
+        }
+
+        const micPerm = await navigator.permissions.query( { name: 'microphone' } );
+        if ( micPerm.state === 'denied' ) {
+          throw new Error( 'Se requiere acceso al micrófono.' );
+        }
+
+      } catch ( error ) {
+        if ( error.name === 'NotAllowedError' ) {
+          throw new Error( 'Se requiere acceso a la cámara y micrófono. Por favor, permite el acceso en la configuración del navegador.' );
+        } else if ( error.name === 'NotFoundError' ) {
+          throw new Error( 'No se encontró una cámara o micrófono disponible.' );
+        } else if ( error.name === 'NotReadableError' ) {
+          throw new Error( 'La cámara o micrófono está siendo usado por otra aplicación.' );
+        } else {
+          throw new Error( 'Error al acceder a la cámara o micrófono: ' + error.message );
+        }
+      }
+    },
+
     async startTransmission() {
       this.isLoading = true;
       this.statusMessage = 'Starting transmission...';
@@ -41,17 +66,7 @@ function uiModel() {
         }
 
         // Solicitar el stream con manejo de errores específico
-      try {
-
-        const cameraPerm = await navigator.permissions.query( { name: 'camera' } );
-        if ( cameraPerm.state === 'denied' ) {
-          throw new Error( 'Se requiere acceso a la cámara.' );
-        }
-
-        const micPerm = await navigator.permissions.query( { name: 'microphone' } );
-        if ( micPerm.state === 'denied' ) {
-          throw new Error( 'Se requiere acceso al micrófono.' );
-        }
+        await this.requestPermissions();
 
         this.localStream = await navigator.mediaDevices.getUserMedia( {
           video: {
@@ -65,18 +80,6 @@ function uiModel() {
             autoGainControl: true
           }
         } );
-
-      } catch ( error ) {
-        if ( error.name === 'NotAllowedError' ) {
-          throw new Error( 'Se requiere acceso a la cámara y micrófono. Por favor, permite el acceso en la configuración del navegador.' );
-        } else if ( error.name === 'NotFoundError' ) {
-          throw new Error( 'No se encontró una cámara o micrófono disponible.' );
-        } else if ( error.name === 'NotReadableError' ) {
-          throw new Error( 'La cámara o micrófono está siendo usado por otra aplicación.' );
-        } else {
-          throw new Error( 'Error al acceder a la cámara o micrófono: ' + error.message );
-        }
-      }
 
         const localVideo = document.querySelector( '#videoStreamPlayer' );
         // Create a new MediaStream with only video track for local preview
@@ -103,8 +106,10 @@ function uiModel() {
       this.statusMessage = 'Starting subscription...';
       this.role = this.ROLES.SUBSCRIBER;
 
-      try {
+      // Solicitar el stream con manejo de errores específico
+      await this.requestPermissions();
 
+      try {
         this.sendMessage( { type: 'register', role: this.role } );
         this.statusMessage = 'Waiting for transmission...';
       } catch ( error ) {
@@ -444,8 +449,8 @@ function uiModel() {
         console.log( 'Creating new peer connection for subscriber' );
         let peerConnection = this.createPeerConnection( payload.sender );
 
-        peerConnection.addTransceiver('video', { direction: 'recvonly' });
-        peerConnection.addTransceiver('audio', { direction: 'recvonly' });
+        peerConnection.addTransceiver( 'video', { direction: 'recvonly' } );
+        peerConnection.addTransceiver( 'audio', { direction: 'recvonly' } );
 
         console.log( 'Setting remote description' );
         await peerConnection.setRemoteDescription( new RTCSessionDescription( payload.offer ) );
