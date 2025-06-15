@@ -1,5 +1,5 @@
-const ROLES = require( './consts' );
-const { debug } = require( './utils' );
+import ROLES from './consts.mjs';
+import logger from './logger.mjs';
 
 // Clientes
 const Clients = new Set(); // ws
@@ -8,23 +8,23 @@ const Clients = new Set(); // ws
 const Subscriptors = new Set(); // ws
 
 function handleRegister( ws, data ) {
-  debug( `handleRegister [ID: ${ ws.id }] as ${ data.role }` );
+  logger.info( `Client from ${ ws.address } registered as ${ data.role }` );
   ws.role = data.role;
   Clients.add( ws );
   if ( data.role === ROLES.TRANSMITTER ) {
     // we notify the transmitter about every subscriber already connected
     for ( const clientWs of Clients ) {
       if ( clientWs.role === ROLES.SUBSCRIBER ) {
-        debug( `find previous subscriber [ID: ${ clientWs.id }]` );
-        debug( `send create-offer to transmitter [ID: ${ ws.id }]` );
-        sendMessage( ws, { type: 'create-offer', sender: clientWs.id } );
+        logger.debug( `found previous subscriber at ${ clientWs.address }` );
+        logger.debug( `sending create-offer to transmitter at ${ ws.address }` );
+        sendMessage( ws, { type: 'create-offer', sender: clientWs.address } );
       }
     }
   } else if ( data.role === ROLES.SUBSCRIBER ) {
     for ( const clientWs of Clients ) {
       if ( clientWs.role === ROLES.TRANSMITTER ) {
-        debug( `find previous transmitter [ID: ${ clientWs.id }]` );
-        sendMessage( clientWs, { type: 'create-offer', sender: ws.id } );
+        logger.debug( `found previous transmitter at ${ clientWs.address }` );
+        sendMessage( clientWs, { type: 'create-offer', sender: ws.address } );
         break;
       }
     }
@@ -50,7 +50,7 @@ function handleAnswer( ws, data ) {
   const { target, answer } = data;
   for ( const clientWs of Clients ) {
     if ( clientWs.id === target ) {
-      debug( `Transmitter found: ${ clientWs.id }` );
+      logger.debug( `Transmitter found at ${ clientWs.address }` );
       sendMessage( clientWs, { type: 'answer', answer, sender: ws.id } );
       break;
     }
@@ -69,6 +69,7 @@ function handleIceCandidate( ws, data ) {
 
 function handleDisconnect( ws ) {
   if ( Clients.has( ws ) ) {
+    logger.info( `${ ws.role } at ${ ws.address } disconnected` );
     ws.role = null;
     // notifiy any other client about this client disconnection
     for ( const clientWs of Clients ) {
@@ -123,4 +124,4 @@ const ClientsHandler = {
   handleClose
 };
 
-module.exports = ClientsHandler;
+export default ClientsHandler;

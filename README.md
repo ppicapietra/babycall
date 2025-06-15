@@ -1,4 +1,4 @@
-# Baby Call WebApp
+# Baby Call
 
 A modern, web-based baby monitoring solution that transforms any smartphone into a baby monitor. No special hardware required - just use your existing devices on a local WiFi network.
 
@@ -22,23 +22,23 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
    npm install
    ```
 
-3. Start the server:
+3. Start the app:
 
    ```bash
-   npm start
+   npm run start
    ```
   
-   or, if you want debug information on the terminal:
+   or, if you want debug tools activated:
 
    ```bash
-   npm start:debug
+   npm run dev
    ```
 
 4. To access the application see the terminal for the url or the QR to scan from a mobile device
 
-## 🍏 Build MacOS App
+## 🍏 Build Installation App
 
-To build the MacOS app, you can use the provided npm script. Follow these steps:
+To build the installation app, you can use the provided npm script. Follow these steps:
 
 1. Ensure you have all the necessary dependencies installed:
 
@@ -49,14 +49,10 @@ To build the MacOS app, you can use the provided npm script. Follow these steps:
 2. Run the build script for MacOS:
 
    ```bash
-   npm run build:macos
+   npm run build
    ```
 
-3. After the build process completes, you will find the MacOS app in the `builds/` directory. The app will be named `babycall.app`.
-
-4. You can now run the app directly on your MacOS system.
-
-Note: Make sure you have the necessary permissions to execute shell scripts on your system.
+3. After the build process completes, you will find the installation app in the `dist/` directory. The app will be named `baby-call<version>-<platform>.dmg`.
 
 ## 🌟 Features
 
@@ -70,6 +66,7 @@ Note: Make sure you have the necessary permissions to execute shell scripts on y
 
 ## 🛠️ Technical Stack
 
+- **Electron**: Desktop-like web apps
 - **WebSocket**: Real-time signaling and communication
 - **WebRTC**: Peer-to-peer audio/video streaming
 - **Express**: Backend server implementation
@@ -80,16 +77,16 @@ Note: Make sure you have the necessary permissions to execute shell scripts on y
 1. **Transmitter Setup**:
    - Open the app on the device you want to use as the transmitter
    - Grant camera and microphone permissions
-   - Click on the button "Transmitir"
+   - Click on the button "Transmit"
 
 2. **Viewer Setup**:
-   - Open the app on any device you want to use as a viewer
-   - Click on the button "Visualizar"
-   - Start monitoring
+   - Open the server url on any device you want to use as a viewer
+   - Click on the button "Watch"
+   - Grant camera and microphone permissions (If required)
 
 3. **YouTube Control**:
    - From any viewer device, enter a YouTube URL
-   - Control playback (play/pause) remotely, broadcasting the new status to all the others viewers
+   - Control playback (play/pause) remotely, broadcasting the new status to all of the others viewers
 
 ## 📝 License
 

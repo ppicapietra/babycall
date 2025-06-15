@@ -76,7 +76,7 @@ function uiModel() {
           },
           audio: {
             echoCancellation: true,
-            noiseSuppression: true,
+            // noiseSuppression: true,
             autoGainControl: true
           }
         } );
@@ -107,10 +107,12 @@ function uiModel() {
       this.role = this.ROLES.SUBSCRIBER;
 
       // Just to trigger permissions request on some browsers
-      navigator.mediaDevices.getUserMedia( {
+      const tempStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
-      } );
+      });
+      // Stop the temporary stream after triggering permissions
+      tempStream.getTracks().forEach(track => track.stop());
 
       // Check permissions of camera and microphone
       await this.checkPermissions();

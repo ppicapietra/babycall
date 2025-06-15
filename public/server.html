@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Baby-Call</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .version {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .qr-section {
+            text-align: center;
+        }
+
+        .qr-code {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .url {
+            margin-top: 10px;
+            font-family: monospace;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+
+        .logs-section {
+            width: 450px;
+        }
+
+        .logs-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .logs-container {
+            height: 460px;
+            overflow-y: auto;
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .log-entry.error {
+            color: #d32f2f;
+        }
+
+        .log-entry.info {
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <div class="header">
+                <img src="logo.png" alt="Baby-Call Logo" class="logo">
+                <div class="version">v<span id="version">0.0.0</span></div>
+            </div>
+    
+            <div class="qr-section">
+                <div id="qr-code" class="qr-code">
+                    <p>Loading QR code...</p>
+                </div>
+                <div id="url" class="url">Loading URL...</div>
+            </div>
+        </div>
+
+        <div class="logs-section">
+            <div class="logs-title">Event Logs</div>
+            <div id="logs" class="logs-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        // Handle server started event
+        ipcRenderer.on('server-started', (event, data) => {
+            document.querySelector('#version').textContent = data.version;
+            document.querySelector('#qr-code').innerHTML = `<img src="${data.qrCode}" alt="QR Code">`;
+            document.querySelector('#url').innerHTML = `<a href="${data.url}" target="_blank">${data.url}</a>`;
+            addLog('Server started successfully', 'info');
+        });
+
+        // Handle new log entries
+        ipcRenderer.on('new-log', (event, data) => {
+            addLog(data.message, data.type || 'info');
+        });
+
+        // Handle errors
+        ipcRenderer.on('error', (event, message) => {
+            addLog(message, 'error');
+        });
+
+        function addLog(message, type) {
+            const logsContainer = document.querySelector('#logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html> 

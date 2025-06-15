@@ -1,6 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const fse = require('fs-extra');
+import fse from 'fs-extra';
 
 const copy = (src, dest) => {
   fse.copySync(src, dest, { overwrite: true });

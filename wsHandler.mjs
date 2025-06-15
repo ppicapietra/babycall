@@ -1,19 +1,19 @@
-const ClientsHandler = require( './clientHandler' );
-const { debug } = require( './utils' );
+import logger from './logger.mjs';
+import ClientsHandler from './clientHandler.mjs';
+import { randomUUID } from 'node:crypto';
 
 function onConnection( ws, req ) {
   try {
     try {
-      const { randomUUID } = require('node:crypto');
       ws.id = randomUUID();
     } catch (error) {
-      debug("Crypto not available, using random UUID");
+      logger.debug("Crypto not available, using random UUID");
       ws.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
     ws.role = null;
     ws.address = req.socket.remoteAddress;
   
-    debug( `New client connected [ID: ${ ws.id }] from ${ ws.address }` );
+    logger.info( `New client connected from ${ ws.address }` );
   
   
     ws.on( 'message', ( message ) => {
@@ -36,7 +36,7 @@ function onMessage( message ) {
   try {
     const ws = this.ws;
     const data = JSON.parse( message );
-    debug( `Received message: ${ JSON.stringify( data?.type ) }` );
+    logger.debug( `Received message: ${ JSON.stringify( data?.type ) }` );
 
     /**
      * MESSAGE TYPES:
@@ -75,22 +75,22 @@ function onMessage( message ) {
 
 
   } catch ( error ) {
-    debug( `Error handling message: ${ error }` );
+    logger.error( `Error handling message: ${ error }` );
   }
 }
 
 function onClose() {
   const ws = this.ws;
-  debug( `Client disconnected [ID: ${ ws.id }]` );
+  logger.info( `Client disconnected at ${ ws.address }` );
   ClientsHandler.handleClose( ws );
 }
 
 function onError( error ) {
   const ws = this.ws;
-  debug( `Error in connection [ID: ${ ws.id }]:`, error );
+  logger.error( `Error in connection [ID: ${ ws.id }]:`, error );
 }
 
-module.exports = {
+export default {
   onConnection,
   onMessage,
   onClose,

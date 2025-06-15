@@ -3,4 +3,4 @@ const ROLES = {
   SUBSCRIBER: 'subscriber',
 };
 
-module.exports = ROLES;
+export default ROLES;
