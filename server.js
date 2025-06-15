@@ -6,7 +6,6 @@ const os = require( 'os' );
 const path = require( 'path' );
 const qrcode = require('qrcode-terminal');
 const wsHandler = require( './wsHandler' );
-const { debug } = require( './utils' );
 const app = express();
 const VERSION = require( './package.json' ).version;
 // HTTPS certificates
@@ -27,7 +26,7 @@ const wss = new WebSocket.Server( {
   // Additional WebSocket configuration
   clientTracking: true,
   verifyClient: ( info, callback ) => {
-    debug( `New incoming connection from: ${ info.req.headers.origin }` );
+    console.log( `New incoming connection from: ${ info.req.headers.origin }` );
     callback( true ); // Accept all connections
   }
 } );
@@ -38,6 +37,11 @@ wss.on( 'connection', ( ws, req ) => {
 
 // Serve static files
 app.use( express.static( path.join(__dirname, 'public') ) );
+
+// Add route handler for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'client.html'));
+});
 
 // Function to get local IP
 function getLocalIP() {
