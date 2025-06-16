@@ -17,14 +17,14 @@ function handleRegister( ws, data ) {
       if ( clientWs.role === ROLES.SUBSCRIBER ) {
         logger.debug( `found previous subscriber at ${ clientWs.address }` );
         logger.debug( `sending create-offer to transmitter at ${ ws.address }` );
-        sendMessage( ws, { type: 'create-offer', sender: clientWs.address } );
+        sendMessage( ws, { type: 'create-offer', sender: clientWs.id } );
       }
     }
   } else if ( data.role === ROLES.SUBSCRIBER ) {
     for ( const clientWs of Clients ) {
       if ( clientWs.role === ROLES.TRANSMITTER ) {
         logger.debug( `found previous transmitter at ${ clientWs.address }` );
-        sendMessage( clientWs, { type: 'create-offer', sender: ws.address } );
+        sendMessage( clientWs, { type: 'create-offer', sender: ws.id } );
         break;
       }
     }

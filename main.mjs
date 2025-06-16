@@ -70,7 +70,9 @@ expressApp.use( express.static( path.join( __dirname, 'public' ) ) );
 
 // Add route handler for root path
 expressApp.get( '/', ( req, res ) => {
-	res.sendFile( path.join( __dirname, 'public', 'client.html' ) );
+	let html = fs.readFileSync( path.join( __dirname, 'public', 'client.html' ), 'utf8' );
+	html = html.replace( '{{VERSION}}', app.getVersion() );
+	res.send( html );
 } );
 
 // Function to get local IP
