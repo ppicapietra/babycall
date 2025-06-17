@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import path from 'path';
 import express from 'express';
 import https from 'https';
@@ -111,6 +111,19 @@ app.whenReady().then( () => {
 			qrCode: qrDataUrl,
 			version: app.getVersion()
 		} );
+
+		mainWindow.webContents.setWindowOpenHandler( ( { url } ) => {
+			shell.openExternal( url );
+			return { action: 'deny' };
+		} );
+
+		mainWindow.webContents.on( 'will-navigate', ( event, url ) => {
+			if ( url !== mainWindow.webContents.getURL() ) {
+				event.preventDefault();
+				shell.openExternal( url );
+			}
+		} );
+
 	} );
 } );
 

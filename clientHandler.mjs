@@ -15,15 +15,15 @@ function handleRegister( ws, data ) {
     // we notify the transmitter about every subscriber already connected
     for ( const clientWs of Clients ) {
       if ( clientWs.role === ROLES.SUBSCRIBER ) {
-        logger.debug( `found previous subscriber at ${ clientWs.address }` );
-        logger.debug( `sending create-offer to transmitter at ${ ws.address }` );
+        // logger.debug( `found subscriber at ${ clientWs.address }` );
+        // logger.debug( `sending create-offer to transmitter at ${ ws.address }` );
         sendMessage( ws, { type: 'create-offer', sender: clientWs.id } );
       }
     }
   } else if ( data.role === ROLES.SUBSCRIBER ) {
     for ( const clientWs of Clients ) {
       if ( clientWs.role === ROLES.TRANSMITTER ) {
-        logger.debug( `found previous transmitter at ${ clientWs.address }` );
+        // logger.debug( `found previous transmitter at ${ clientWs.address }` );
         sendMessage( clientWs, { type: 'create-offer', sender: ws.id } );
         break;
       }
@@ -50,7 +50,7 @@ function handleAnswer( ws, data ) {
   const { target, answer } = data;
   for ( const clientWs of Clients ) {
     if ( clientWs.id === target ) {
-      logger.debug( `Transmitter found at ${ clientWs.address }` );
+      // logger.debug( `Transmitter found at ${ clientWs.address }` );
       sendMessage( clientWs, { type: 'answer', answer, sender: ws.id } );
       break;
     }

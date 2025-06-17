@@ -13,7 +13,7 @@ function onConnection( ws, req ) {
     ws.role = null;
     ws.address = req.socket.remoteAddress;
   
-    logger.info( `New client connected from ${ ws.address }` );
+    logger.info( `New device connected from ${ ws.address }` );
   
   
     ws.on( 'message', ( message ) => {
@@ -36,7 +36,7 @@ function onMessage( message ) {
   try {
     const ws = this.ws;
     const data = JSON.parse( message );
-    logger.debug( `Received message: ${ JSON.stringify( data?.type ) }` );
+    // logger.debug( `Received message: ${ JSON.stringify( data?.type ) }` );
 
     /**
      * MESSAGE TYPES:
