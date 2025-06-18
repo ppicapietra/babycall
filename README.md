@@ -1,4 +1,4 @@
-# Baby Call
+# Baby Watcher
 
 A modern, web-based baby monitoring solution that transforms any smartphone into a baby monitor. No special hardware required - just use your existing devices on a local WiFi network.
 
@@ -11,8 +11,8 @@ A modern, web-based baby monitoring solution that transforms any smartphone into
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/ppicapietra/babycall.git
-   cd babycall
+   git clone https://github.com/ppicapietra/babywatcher.git
+   cd babywatcher
    code .
    ```
 
