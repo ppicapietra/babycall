@@ -1,7 +1,7 @@
 {
-  "name": "baby-call",
+  "name": "baby-watcher",
   "version": "1.0.0",
-  "description": "Baby-Call Video Streaming App",
+  "description": "Baby-Watcher Video Streaming App",
   "type": "module",
   "author": "ppicapietra",
   "license": "ISC",
@@ -29,7 +29,7 @@
   },
   "build": {
     "icon": "public/logo",
-    "appId": "com.babycall.app",
+    "appId": "com.babywatcher.app",
     "mac": {
       "category": "public.app-category.video"
     },

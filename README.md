@@ -52,7 +52,7 @@ To build the installation app, you can use the provided npm script. Follow these
    npm run build
    ```
 
-3. After the build process completes, you will find the installation app in the `dist/` directory. The app will be named `baby-call<version>-<platform>.dmg`.
+3. After the build process completes, you will find the installation app in the `dist/` directory. The app will be named `baby-watcher<version>-<platform>.dmg`.
 
 ## 🌟 Features
 
