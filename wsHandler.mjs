@@ -81,7 +81,7 @@ function onMessage( message ) {
 
 function onClose() {
   const ws = this.ws;
-  logger.info( `Client disconnected at ${ ws.address }` );
+  logger.info( `${ ws.role } disconnected at ${ ws.address }` );
   ClientsHandler.handleClose( ws );
 }
 

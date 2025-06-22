@@ -8,7 +8,7 @@ const Clients = new Set(); // ws
 const Subscriptors = new Set(); // ws
 
 function handleRegister( ws, data ) {
-  logger.info( `Client from ${ ws.address } registered as ${ data.role }` );
+  logger.info( `Device from ${ ws.address } registered as ${ data.role }` );
   ws.role = data.role;
   Clients.add( ws );
   if ( data.role === ROLES.TRANSMITTER ) {
@@ -69,7 +69,7 @@ function handleIceCandidate( ws, data ) {
 
 function handleDisconnect( ws ) {
   if ( Clients.has( ws ) ) {
-    logger.info( `${ ws.role } at ${ ws.address } disconnected` );
+    logger.info( `${ ws.role } at ${ ws.address } deregistered` );
     ws.role = null;
     // notifiy any other client about this client disconnection
     for ( const clientWs of Clients ) {
